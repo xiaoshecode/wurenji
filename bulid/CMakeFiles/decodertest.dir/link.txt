@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/decodertest.dir/main.cpp.o  -o decodertest  -L/root/catkin_ws/src/Decodertest/lib -Wl,-rpath,/root/catkin_ws/src/Decodertest/lib: -lTTARtspPusher -lDjiRtspImageSource 
