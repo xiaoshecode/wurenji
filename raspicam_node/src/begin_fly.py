@@ -1,0 +1,22 @@
+import os
+import time
+#My_Cmmnd="cd /root/tta_ros"
+#os.system("gnome-terminal -e 'bash -c \""+My_Cmmnd+";bash\"'")
+#os.system("cd /root/tta_ros")
+#os.system("source /root/catkin_ws/devel/setup.bash")
+#os.system("cd /root/catkin_ws/src/raspicam_node/src")
+# os.system("./zhiling.sh")
+# os.system("rosrun ttauav_node service_client 1")
+# os.system("rosrun ttauav_node service_client 4 0 0 0.01")
+# os.system("python rtsp.py")
+# os.system("rosrun ttauav_node service_client 4 0 0.34 0")
+# os.system("q")
+# time.sleep(180)
+# os.system("rosrun ttauav_node service_client 2")
+# os.system("rosrun ttauav_node service_client 1")
+# os.system("rosrun ttauav_node service_client 4 0.12 0 0")
+# os.system("python rtsp.py")
+# os.system("rosrun ttauav_node service_client 4 0 -0.34 0")
+# os.system("q")
+# os.system("rosrun ttauav_node service_client 4 -0.12 0 0")
+# os.system("rosrun ttauav_node service_client 2")
