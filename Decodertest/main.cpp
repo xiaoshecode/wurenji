@@ -41,8 +41,8 @@ int main(int argc, char** argv)
 	int64_t ts = now();
 
 	DjiRtspImageSource service(rtsp_url);
-	service.setImageCallback(nullptr, [&ts](void* handler, uint8_t* frmdata, int frmsize, int width, int height, int pixfmt) -> void {
-		printf("Image %d@%p  --  %dx%d -- %d\n", frmsize, frmdata, width, height, pixfmt);
+	service.setImageCallback(nullptr, [&ts](void* handler, uint8_t* frmdata, int frmsize, int width, int height, int pixfmt) -> void {//最重要的回调函数
+		printf("Image %d@%p  --  %dx%d -- %d\n", frmsize, frmdata, width, height, pixfmt);//打印图片信息
 		if(frmdata)
 		{
 			int64_t t = now();
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 				ts = t;
 				char name[64];
 				static int counter = 0;
-				sprintf(name, "pictures/%dx%d-%d_%d.jpg", width, height, pixfmt, ++counter);
+				sprintf(name, "pictures/%dx%d-%d_%d.jpg", width, height, pixfmt, ++counter);//输出图片
 				//if(pixfmt == 5) stbi_write_jpg(name, width, height, 3, frmdata, 80);
 				uint8_t* rgbData = new uint8_t[width * height * 3];
 				int result = DjiRtspImageSource::FrameDataToRGB(frmdata, frmsize, width, height, pixfmt, rgbData);
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 		}
 	});
 	service.start();
-	for(;;)
+	for(;;)//一直运行，可以修改
 	//for(int i=0; i<30; i++)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
