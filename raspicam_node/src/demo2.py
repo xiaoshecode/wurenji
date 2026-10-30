@@ -3,7 +3,7 @@
 
 #一个简单的穿环demo：利用hough圆检测识别图像中的圆，然后调整无人机姿态和位置，穿过圆心，降落；
 #无人机移动逻辑是每前进1m，就调整一次姿态，然后再前进1m，当检测到圆的半径大于阈值时，认为到达环近点，向前飞行2m穿过环；
-#运行roslaunch uav_sim demo2.launch后，再在另一个终端中运行rosrun uav_sim demo2.py 
+#运行roslaunch uav_sim demo2.launch后，再在另一个终端中运行rosrun uav_sim demo2.py
 
 import cv2
 import rospy
@@ -43,7 +43,7 @@ from ttauav_node.msg import uavdata
 #                     rospy.loginfo("( %d  ,  %d ),r=  %d ",i[0],i[1],i[2])
 #                     #更新导航信息，此处是粗略估计图像和实际距离，其实可以用结合目标在图像中的位置和相机内外参数得到较准确的坐标
 #                     navigation = np.array([(i[0] - 160) / i[2] * 70, (i[1] - 80) / i[2] * 70, i[2]])
-#             image_result_pub.publish(bridge.cv2_to_imgmsg(cv_img_cp,encoding='bgr8'))    
+#             image_result_pub.publish(bridge.cv2_to_imgmsg(cv_img_cp,encoding='bgr8'))
 #     except CvBridgeError as e:
 #         print(e)
 def uavdataCallback(msg):
@@ -60,6 +60,7 @@ def uavdataCallback(msg):
 #     uavdata = rospy.Subscriber('/uavdata/get_logger_level',uavdata,uavdataCallback)
 #     rospy.sleep(100)
 def call_service():
+    raise NotImplementedError("This service demonstration is unfinished; no flight command was sent.")
     # rospy.init_node('node_name')  # 你的节点名
     # rospy.wait_for_service('/uavdata/get_loggers')  # 你的服务名
     # try:

@@ -52,9 +52,9 @@ class circle_detector:
     def _patch(self):
         self.num_components, _, self.stats, _ = cv2.connectedComponentsWithStats(self.thresh_img)
         # filter small patches
-        large_components = self.stats[self.stats[:, cv2.CC_STAT_AREA] > self.min_patch_area]
-        # sort and filter the background
-        self.stats = np.array(sorted(large_components, key=lambda x:x[cv2.CC_STAT_WIDTH]*x[cv2.CC_STAT_HEIGHT]))[:-1]
+        # Label zero is the background, regardless of its area.
+        foreground = self.stats[1:]
+        self.stats = foreground[foreground[:, cv2.CC_STAT_AREA] > self.min_patch_area]
         # print("self.stats=",self.stats)
         
         self.num_components = len(self.stats)
@@ -129,8 +129,8 @@ class circle_detector:
                 if len(partners) <= 1:
                     continue
                 # the case where more than one matches exist
-                max_score = 0
-                max_match = 0
+                max_score = -1
+                max_match = partners[0]
                 for match in partners:
                     # perform strong match between the weak-matched pattern and the original pattern
                     score = self._strong_match(match, i)
@@ -139,12 +139,12 @@ class circle_detector:
                         max_match = match
 
                 # remove the unwanted matches
-                for match in partners:
+                for match in list(partners):
                     if match != max_match:
-                        match_table[match].remove(max_match)
-                        match_table[max_match].remove(match)
-                        match_matrix[match, max_match] = 0
-                        match_matrix[max_match, match] = 0
+                        match_table[match].remove(i)
+                        match_table[i].remove(match)
+                        match_matrix[match, i] = 0
+                        match_matrix[i, match] = 0
 
             # then, remove the unmatched ones
             reduced_mm = np.sum(match_matrix, axis=1)

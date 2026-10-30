@@ -53,12 +53,6 @@ generate_messages(
   std_msgs
 )
 
-#add dynamic reconfigure api
-generate_dynamic_reconfigure_options(
-
-)
-
-
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -68,7 +62,6 @@ generate_dynamic_reconfigure_options(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
 #  LIBRARIES raspicam
 #  CATKIN_DEPENDS compressed_image_transport roscpp std_msgs
 #  DEPENDS system_lib
@@ -81,7 +74,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include
+include_directories(
   ${catkin_INCLUDE_DIRS}
   /opt/vc/include
   /opt/vc/include/interface/vcos/pthreads

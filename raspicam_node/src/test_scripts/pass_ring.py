@@ -15,7 +15,7 @@ from std_msgs.msg import String, Bool
 from geometry_msgs.msg import PoseStamped
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-sys.path.insert(0, '/root/catkin_ws/src/raspicam_node/src/cv')
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'cv')))
 from circle_detect import circle_detector
 
 class TestNode:
@@ -32,7 +32,7 @@ class TestNode:
 
         self.command_prefix_ = "rosrun ttauav_node service_client 4 "
         self.Focal_length = 1.050e+03 # pixel
-        
+
         self.image_ = None
         self.bridge_ = CvBridge()
         self.flight_state_ = self.FlightState.WAITING
@@ -45,7 +45,7 @@ class TestNode:
 
         self.detector_ = circle_detector()
         self.imageSub_ = rospy.Subscriber('camera/image', Image, self.imageCallback)
-        
+
         self.max_dis = 0.4    # m
         self.thresh_dis = 30  # cm
         self.fw_cnt = 0
@@ -61,7 +61,7 @@ class TestNode:
                 break
             self.rate.sleep()
         rospy.logwarn('Test node shut down.')
-    
+
     def decision(self):
         # take off
         if self.flight_state_ == self.FlightState.WAITING:
@@ -83,7 +83,7 @@ class TestNode:
                 ack = os.system("rosrun ttauav_node service_client 4 0 0 0.4")
                 rospy.sleep(5)
                 self.flight_state_ = self.FlightState.NAVIGATING
-        
+
         elif self.flight_state_ == self.FlightState.NAVIGATING:
             rospy.logwarn('Navigating.')
             if not self.navigating_queue_:
@@ -94,7 +94,7 @@ class TestNode:
                     if np.abs(self.navigation[1]) > self.thresh_dis:
                         self.navigating_queue_.append(['d', -self.navigation[1]])
                         rospy.loginfo('[DATA INFO] Navigating: bad height adjusting %d', int(-self.navigation[1]))
-                
+
                 if not self.navigating_queue_:
                     self.navigating_queue_.append(['n', 150])
                     rospy.loginfo('[DATA INFO] Navigating: Going forward')
@@ -106,11 +106,11 @@ class TestNode:
                     # dis = self.navigation[3]
                     # self.navigating_queue_.append(['n', dis])
                     # rospy.loginfo('Navigating: good position, go foward %d', int(dis))
-                
+
             next_nav = self.navigating_queue_.popleft()
             self.navigation2Command(next_nav[0], next_nav[1])
 
-            
+
         elif self.flight_state_ == self.FlightState.LANDING:
             rospy.logwarn('Landing.')
             rospy.logwarn("[COMMAND] rosrun ttauav_node service_client 2")
@@ -137,7 +137,7 @@ class TestNode:
             self.navigation = np.array([(x - (w/2 - self.bias_x)) / r * 171.0 / 2.0, (y - (h/2 - self.bias_h)) / r * 171.0 / 2.0, r, distance])
             rospy.loginfo("[IMG CALLBACK] Ring detected! x: %d, y: %d, r: %d, d: %d" % (x, y, r, distance))
             rospy.loginfo("[NAVIGATION CALLBACK] 1: %f, 2: %f" % (self.navigation[0], self.navigation[1]))
-            
+
     def navigation2Command(self, dim, dis):
         dis = dis / 100.0       # cm to m
         dis = dis / 2.0           # flight time = 2000 ms
@@ -155,10 +155,10 @@ class TestNode:
             command_msg += '0 ' + dis_str + ' 0'
         elif dim == 'n':
             command_msg += dis_str + ' 0 0'
-        
+
         rospy.logwarn("[COMMAND] " + command_msg)
         ack = os.system(command_msg)
         rospy.sleep(5)
-        
+
 if __name__ == "__main__":
     TestNode()
