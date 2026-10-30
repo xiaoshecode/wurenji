@@ -22,7 +22,7 @@
 
 目标环境为 Linux + ROS 1/catkin、C++14、OpenCV、匹配 CPU 架构的厂商 SDK/`.so`，原工程使用 ROS Melodic 路径。当前代码还涉及 NumPy、cv_bridge、pyzbar、apriltag 等按具体脚本选用的 Python 依赖；不同 ROS 发行版的 Python 版本需分别匹配。
 
-仓库根目录 CMake 原先只是失效的 Windows 绝对路径，现已替换成通过已加载 ROS 环境查找 catkin 的入口。以下展示将本仓库作为 `catkin_ws/src` 的布局：
+仓库根目录 CMake 原先是指向 Windows 绝对路径的失效符号链接，现已替换成 **Git 普通文件（模式 100644）**，通过已加载 ROS 环境查找 catkin。以下展示将本仓库作为 `catkin_ws/src` 的布局：
 
 ```sh
 source /opt/ros/melodic/setup.bash
@@ -56,9 +56,9 @@ python -m pip install numpy opencv-python-headless
 python -m unittest discover -s tests -v
 ```
 
-2026-10-30：3 项回归测试通过，覆盖全前景图像保留、空图像、多个候选匹配时删除正确的双向关系。源码也完成 Python AST 解析；这不等于 ROS 导入/运行验证。
+2026-10-30：4 项回归测试通过，覆盖全前景图像保留、空图像、多个候选匹配时删除正确的双向关系，以及多目标图像的既有选择顺序。源码也完成 Python AST 解析；这不等于 ROS 导入/运行验证。
 
-本次修复：以连通域标签 0 识别背景；修正多匹配关系删除索引；穿环脚本使用相对源码路径导入；修正 `demo2.py` 的空函数语法错误（仍显式标记未实现）；修复根 CMake 入口，移除没有配置文件的 dynamic_reconfigure 空调用和不存在的 include 导出。
+本次修复：以连通域标签 0 识别背景，并保留原来的前景包围盒面积稳定排序（调用方使用 `circles[0]`）；修正多匹配关系删除索引；穿环脚本使用相对源码路径导入；修正 `demo2.py` 的空函数语法错误（仍显式标记未实现）；修复根 CMake 入口及文件类型，移除没有配置文件的 dynamic_reconfigure 空调用和不存在的 include 导出。
 
 ## 已知限制
 

@@ -54,7 +54,13 @@ class circle_detector:
         # filter small patches
         # Label zero is the background, regardless of its area.
         foreground = self.stats[1:]
-        self.stats = foreground[foreground[:, cv2.CC_STAT_AREA] > self.min_patch_area]
+        large_components = foreground[foreground[:, cv2.CC_STAT_AREA] > self.min_patch_area]
+        # Preserve the original target priority: the flight client uses circles[0].
+        # Python's stable sort also preserves equal-area component ordering.
+        self.stats = np.array(sorted(
+            large_components,
+            key=lambda patch: patch[cv2.CC_STAT_WIDTH] * patch[cv2.CC_STAT_HEIGHT],
+        ))
         # print("self.stats=",self.stats)
         
         self.num_components = len(self.stats)
